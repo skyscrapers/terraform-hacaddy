@@ -2,7 +2,7 @@ module "hacaddy_instance" {
   source         = "github.com/skyscrapers/terraform-instances//instance?ref=9d2b029642c00f03443a129750382cfd113da027"
   project        = "${var.project}"
   environment    = "${var.environment}"
-  name           = "hacaddy"
+  name           = "${var.proxyname}"
   subnets        = "${var.subnet_ids}"
   ami            = "${var.ami}"
   key_name       = "${var.key_name}"
@@ -11,16 +11,16 @@ module "hacaddy_instance" {
   sgs            = ["${var.sg_all_id}", "${aws_security_group.sg_hacaddy.id}"]
   public_ip      = true
   user_data      = [
-    "#!/bin/bash\n/bin/bash <(/usr/bin/wget -qO- https://raw.githubusercontent.com/skyscrapers/bootstrap/master/autobootstrap.sh) -p puppetmaster02.int.skyscrape.rs -h ${var.project}-${var.environment}-hacaddy01 -f hacaddy01.${var.project}-${var.environment}.skyscrape.rs -t \"UTC\"",
-    "#!/bin/bash\n/bin/bash <(/usr/bin/wget -qO- https://raw.githubusercontent.com/skyscrapers/bootstrap/master/autobootstrap.sh) -p puppetmaster02.int.skyscrape.rs -h ${var.project}-${var.environment}-hacaddy02 -f hacaddy02.${var.project}-${var.environment}.skyscrape.rs -t \"UTC\""
+    "#!/bin/bash\n/bin/bash <(/usr/bin/wget -qO- https://raw.githubusercontent.com/skyscrapers/bootstrap/master/autobootstrap.sh) -p puppetmaster02.int.skyscrape.rs -h ${var.project}-${var.environment}-${var.proxyname}01 -f ${var.proxyname}01.${var.project}-${var.environment}.skyscrape.rs -t \"UTC\"",
+    "#!/bin/bash\n/bin/bash <(/usr/bin/wget -qO- https://raw.githubusercontent.com/skyscrapers/bootstrap/master/autobootstrap.sh) -p puppetmaster02.int.skyscrape.rs -h ${var.project}-${var.environment}-${var.proxyname}02 -f ${var.proxyname}02.${var.project}-${var.environment}.skyscrape.rs -t \"UTC\""
   ]
 }
 
 resource "aws_efs_file_system" "hacaddy_efs" {
-  creation_token = "efs-hacaddy-${var.project}-${var.environment}"
+  creation_token = "efs-${var.proxyname}-${var.project}-${var.environment}"
 
   tags {
-    Name        = "efs-hacaddy-${var.project}-${var.environment}"
+    Name        = "efs-${var.proxyname}-${var.project}-${var.environment}"
     Environment = "${var.environment}"
     Project     = "${var.project}"
   }
@@ -44,7 +44,7 @@ resource "aws_eip" "hacaddy_eip" {
 }
 
 resource "aws_iam_role_policy" "hacaddy_policy" {
-  name   = "policy_hacaddy_${var.project}_${var.environment}"
+  name   = "policy_${var.proxyname}_${var.project}_${var.environment}"
   role   = "${module.hacaddy_instance.role_id}"
 
   policy = <<EOF
@@ -68,12 +68,12 @@ EOF
 }
 
 resource "aws_security_group" "sg_hacaddy" {
-  name        = "sg_hacaddy_${var.project}_${var.environment}"
+  name        = "sg_${var.proxyname}_${var.project}_${var.environment}"
   description = "Security group for hacaddy"
   vpc_id      = "${var.vpc_id}"
 
   tags {
-    Name        = "${var.project}-${var.environment}-sg_hacaddy"
+    Name        = "${var.project}-${var.environment}-sg_${var.proxyname}"
     Environment = "${var.environment}"
     Project     = "${var.project}"
   }

@@ -10,6 +10,12 @@ variable "project" {
   default     = "noproject"
 }
 
+variable "proxyname" {
+  type        = "string"
+  description = "Name to use for the proxy setup"
+  default     = "proxy"
+}
+
 variable "vpc_id" {
   type        = "string"
   description = "VPC ID where the proxies will be deployed"

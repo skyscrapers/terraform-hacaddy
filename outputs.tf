@@ -9,3 +9,7 @@ output "eips" {
 output "instance_ids" {
   value = "${module.hacaddy_instance.instance_ids}"
 }
+
+output "sg_id" {
+  value = "${aws_security_group.sg_hacaddy.id}"
+}
