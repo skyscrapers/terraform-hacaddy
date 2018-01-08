@@ -8,7 +8,7 @@ variable "environments" {
 }
 
 module "hacaddy_instance" {
-  source         = "github.com/skyscrapers/terraform-instances//instance?ref=9d2b029642c00f03443a129750382cfd113da027"
+  source         = "github.com/skyscrapers/terraform-instances//instance?ref=2.0.14"
   project        = "${var.project}"
   environment    = "${var.environment}"
   name           = "${var.proxyname}"
