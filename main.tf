@@ -1,14 +1,5 @@
-variable "environments" {
-  default = {
-    staging     = "-staging"
-    development = "-development"
-    stable      = "-stable"
-    production  = ""
-  }
-}
-
 module "hacaddy_instance" {
-  source         = "github.com/skyscrapers/terraform-instances//instance?ref=2.0.14"
+  source         = "github.com/skyscrapers/terraform-instances//instance?ref=2.3.2"
   project        = "${var.project}"
   environment    = "${var.environment}"
   name           = "${var.proxyname}"
@@ -19,10 +10,15 @@ module "hacaddy_instance" {
   instance_count = 2
   sgs            = ["${var.sg_all_id}", "${aws_security_group.sg_hacaddy.id}"]
   public_ip      = true
-  user_data      = [
-    "#!/bin/bash\n/bin/bash <(/usr/bin/wget -qO- https://raw.githubusercontent.com/skyscrapers/bootstrap/master/autobootstrap.sh) -p puppetmaster02.int.skyscrape.rs -h ${var.project}${lookup(var.environments, var.environment)}-${var.proxyname}01 -f ${var.proxyname}01.${var.project}${lookup(var.environments, var.environment)}.skyscrape.rs -t \"UTC\"",
-    "#!/bin/bash\n/bin/bash <(/usr/bin/wget -qO- https://raw.githubusercontent.com/skyscrapers/bootstrap/master/autobootstrap.sh) -p puppetmaster02.int.skyscrape.rs -h ${var.project}${lookup(var.environments, var.environment)}-${var.proxyname}02 -f ${var.proxyname}02.${var.project}${lookup(var.environments, var.environment)}.skyscrape.rs -t \"UTC\""
-  ]
+  user_data      = ["${module.userdata.user_datas[0]}", "${module.userdata.user_datas[1]}"]
+}
+
+module "userdata" {
+  source              = "github.com/skyscrapers/terraform-instances//puppet-userdata?ref=2.3.2"
+  customer            = "${var.project}"
+  environment         = "${var.environment}"
+  function            = "${var.proxyname}"
+  amount_of_instances = 2
 }
 
 resource "aws_efs_file_system" "hacaddy_efs" {
