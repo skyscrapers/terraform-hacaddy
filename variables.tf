@@ -50,3 +50,9 @@ variable "instance_type" {
   description = "The instance type to launch for the proxy hosts"
   default     = "t2.micro"
 }
+
+variable "cpu_credits" {
+  type        = "string"
+  description = "The type of cpu credits to use"
+  default     = "standard"
+}

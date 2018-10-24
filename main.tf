@@ -1,5 +1,5 @@
 module "hacaddy_instance" {
-  source         = "github.com/skyscrapers/terraform-instances//instance?ref=2.3.2"
+  source         = "github.com/skyscrapers/terraform-instances//instance?ref=2.3.6"
   project        = "${var.project}"
   environment    = "${var.environment}"
   name           = "${var.proxyname}"
@@ -11,6 +11,7 @@ module "hacaddy_instance" {
   sgs            = ["${var.sg_all_id}", "${aws_security_group.sg_hacaddy.id}"]
   public_ip      = true
   user_data      = ["${module.userdata.user_datas[0]}", "${module.userdata.user_datas[1]}"]
+  cpu_credits    = "${var.cpu_credits}"
 }
 
 module "userdata" {
@@ -35,7 +36,7 @@ resource "aws_efs_mount_target" "hacaddy_efs_target" {
   count           = "${var.subnet_count}"
   file_system_id  = "${aws_efs_file_system.hacaddy_efs.id}"
   subnet_id       = "${var.subnet_ids[count.index]}"
-  security_groups = [ "${aws_security_group.sg_hacaddy.id}" ]
+  security_groups = ["${aws_security_group.sg_hacaddy.id}"]
 }
 
 resource "aws_eip" "hacaddy_eip" {
@@ -49,8 +50,8 @@ resource "aws_eip" "hacaddy_eip" {
 }
 
 resource "aws_iam_role_policy" "hacaddy_policy" {
-  name   = "policy_${var.proxyname}_${var.project}_${var.environment}"
-  role   = "${module.hacaddy_instance.role_id}"
+  name = "policy_${var.proxyname}_${var.project}_${var.environment}"
+  role = "${module.hacaddy_instance.role_id}"
 
   policy = <<EOF
 {
@@ -83,7 +84,6 @@ resource "aws_security_group" "sg_hacaddy" {
     Project     = "${var.project}"
   }
 }
-
 
 ## INGRESS
 
@@ -131,7 +131,6 @@ resource "aws_security_group_rule" "hacaddy_efs_ingress" {
   security_group_id        = "${aws_security_group.sg_hacaddy.id}"
   source_security_group_id = "${aws_security_group.sg_hacaddy.id}"
 }
-
 
 ## EGRESS
 
