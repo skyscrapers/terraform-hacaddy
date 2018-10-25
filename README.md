@@ -15,6 +15,7 @@ This module is tailered very specific for Skyscrapers environments
   * [`ami`]: String(required): AMI to be used for the proxy instances.
   * [`key_name`]: String(required): ID of the SSH key to use for the proxy instances.
   * [`instance_type`] String(optional, default "t2.small"): The instance type to launch for the proxy hosts.
+  * [`cpu_credits`] String(optional, default "standard"): The type of cpu credits to use
 
 ## Output
 
@@ -37,6 +38,7 @@ module "hacaddy" {
   sg_all_id     = "${module.securitygroups.sg_all_id}"
   ami           = "ami-971238f1"
   key_name      = "philip"
-  instance_type = "t2.small"
+  instance_type = "t3.small"
+  cpu_credits   = "unlimited"
 }
 ```
