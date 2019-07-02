@@ -34,7 +34,7 @@ module "hacaddy" {
   proxyname     = "proxy"
   vpc_id        = module.vpc.vpc_id
   subnet_count  = 3
-  subnet_ids    = [module.vpc.public_subnets]
+  subnet_ids    = module.vpc.public_subnets
   sg_all_id     = module.securitygroups.sg_all_id
   ami           = "ami-971238f1"
   key_name      = "philip"
