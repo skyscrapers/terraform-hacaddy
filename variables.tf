@@ -22,6 +22,7 @@ variable "vpc_id" {
 }
 
 variable "subnet_count" {
+  type        = number
   description = "Number of subnets"
 }
 
@@ -56,4 +57,3 @@ variable "cpu_credits" {
   description = "The type of cpu credits to use"
   default     = "standard"
 }
-
