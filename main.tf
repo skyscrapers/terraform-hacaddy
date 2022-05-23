@@ -1,5 +1,5 @@
 module "hacaddy_instance" {
-  source         = "github.com/skyscrapers/terraform-instances//instance?ref=3.0.1"
+  source         = "github.com/skyscrapers/terraform-instances//instance?ref=3.1.0"
   project        = var.project
   environment    = var.environment
   name           = var.proxyname
@@ -15,7 +15,7 @@ module "hacaddy_instance" {
 }
 
 module "userdata" {
-  source              = "github.com/skyscrapers/terraform-instances//puppet-userdata?ref=3.0.1"
+  source              = "github.com/skyscrapers/terraform-instances//puppet-userdata?ref=3.1.0"
   customer            = var.project
   environment         = var.environment
   function            = var.proxyname
