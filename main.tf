@@ -15,7 +15,7 @@ module "hacaddy_instance" {
 }
 
 module "userdata" {
-  source              = "github.com/skyscrapers/terraform-instances//puppet-userdata?ref=3.1.0"
+  source              = "github.com/skyscrapers/terraform-instances//puppet-userdata?ref=3.2.0"
   customer            = var.project
   environment         = var.environment
   function            = var.proxyname
